@@ -119,59 +119,45 @@ Espera 1-2 minutos para que todos los servicios inicien completamente.
 
 ```mermaid
 graph TD
-    %% Usuario
-    User[Usuario]
+    User[Usuario] --> Radarr[Radarr - Películas]
+    User --> Sonarr[Sonarr - Series]
     
-    %% Capa de Gestión
-    User -->|Busca películas| Radarr[Radarr<br/>Gestor de Películas]
-    User -->|Busca series| Sonarr[Sonarr<br/>Gestor de Series]
+    Radarr --> Prowlarr[Prowlarr - Indexador]
+    Sonarr --> Prowlarr
     
-    %% Capa de Indexación
-    Radarr -->|Solicita| Prowlarr[Prowlarr<br/>Indexador]
-    Sonarr -->|Solicita| Prowlarr
-    Prowlarr <-->| | Trackers[(Trackers)]
+    Prowlarr --> Trackers[Trackers de Torrents]
+    Trackers --> Prowlarr
     
-    %% Capa de Descarga
-    Prowlarr -->|Mejores torrents| Radarr
-    Prowlarr -->|Mejores torrents| Sonarr
-    Radarr -->|Agrega| qBittorrent[qBittorrent<br/>Cliente Torrent]
-    Sonarr -->|Agrega| qBittorrent
+    Prowlarr --> qBittorrent[qBittorrent]
     
-    %% Almacenamiento
-    qBittorrent -->|Descarga| Torrents[Torrents Directory]
+    qBittorrent --> Torrents[Carpeta Torrents]
     
-    %% Organización
-    Torrents -->|Completado| Radarr
-    Torrents -->|Completado| Sonarr
-    Radarr -->|Organiza| Movies[Movies Directory]
-    Sonarr -->|Organiza| Shows[Shows Directory]
+    Torrents --> Movies[Carpeta Películas]
+    Torrents --> Shows[Carpeta Series]
     
-    %% Subtítulos
-    Radarr -.->|Notifica| Bazarr[Bazarr<br/>Subtítulos]
-    Sonarr -.->|Notifica| Bazarr
-    Bazarr -->|Busca| SubProviders[(Proveedores)]
-    SubProviders -->|Descarga| Bazarr
-    Bazarr -->|Agrega .srt| Movies
-    Bazarr -->|Agrega .srt| Shows
+    Movies --> Bazarr[Bazarr - Subtítulos]
+    Shows --> Bazarr
     
-    %% Reproducción
-    Movies --> Jellyfin[Jellyfin<br/>Streaming]
+    Bazarr --> SubProviders[Proveedores de Subtítulos]
+    SubProviders --> Bazarr
+    
+    Movies --> Jellyfin[Jellyfin - Streaming]
     Shows --> Jellyfin
-    Jellyfin -->|Reproduce| User
     
-    %% Estilos
-    style User fill:#e2e8f0,stroke:#64748b,stroke-width:2px,color:#1e293b
-    style Radarr fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f
-    style Sonarr fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#1e40af
-    style Prowlarr fill:#fed7aa,stroke:#ea580c,stroke-width:2px,color:#7c2d12
-    style qBittorrent fill:#d1fae5,stroke:#059669,stroke-width:2px,color:#064e3b
-    style Bazarr fill:#fce7f3,stroke:#db2777,stroke-width:2px,color:#831843
-    style Jellyfin fill:#e9d5ff,stroke:#9333ea,stroke-width:2px,color:#581c87
-    style Trackers fill:#f1f5f9,stroke:#64748b,stroke-width:2px,color:#1e293b
-    style SubProviders fill:#f1f5f9,stroke:#64748b,stroke-width:2px,color:#1e293b
-    style Torrents fill:#fff7ed,stroke:#f97316,stroke-width:2px,color:#7c2d12
-    style Movies fill:#fef9c3,stroke:#ca8a04,stroke-width:2px,color:#713f12
-    style Shows fill:#cffafe,stroke:#0891b2,stroke-width:2px,color:#164e63
+    Jellyfin --> User
+    
+    style User fill:#e2e8f0,stroke:#64748b
+    style Radarr fill:#fef3c7,stroke:#d97706
+    style Sonarr fill:#dbeafe,stroke:#2563eb
+    style Prowlarr fill:#fed7aa,stroke:#ea580c
+    style qBittorrent fill:#d1fae5,stroke:#059669
+    style Bazarr fill:#fce7f3,stroke:#db2777
+    style Jellyfin fill:#e9d5ff,stroke:#9333ea
+    style Trackers fill:#f1f5f9,stroke:#64748b
+    style SubProviders fill:#f1f5f9,stroke:#64748b
+    style Torrents fill:#fff7ed,stroke:#f97316
+    style Movies fill:#fef9c3,stroke:#ca8a04
+    style Shows fill:#cffafe,stroke:#0891b2
 ```
 
 ## Comandos Rápidos
