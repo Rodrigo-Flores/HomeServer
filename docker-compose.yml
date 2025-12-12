@@ -1,0 +1,149 @@
+services:
+  # --- Servidor Multimedia ---
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - JELLYFIN_PublishedServerUrl=${JELLYFIN_PUBLISHED_URL}
+    volumes:
+      - ${CONFIG_PATH}/jellyfin:/config
+      - ${DATA_PATH}/media:/data/media
+    ports:
+      - ${JELLYFIN_PORT}:8096
+    restart: unless-stopped
+    networks:
+      - mediaserver
+    deploy:
+      resources:
+        limits:
+          memory: ${JELLYFIN_MEMORY_LIMIT}
+        reservations:
+          memory: ${JELLYFIN_MEMORY_RESERVATION}
+
+  # --- Gestor de Películas ---
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONFIG_PATH}/radarr:/config
+      - ${DATA_PATH}:/data
+    ports:
+      - ${RADARR_PORT}:7878
+    restart: unless-stopped
+    networks:
+      - mediaserver
+    deploy:
+      resources:
+        limits:
+          memory: ${RADARR_MEMORY_LIMIT}
+        reservations:
+          memory: ${RADARR_MEMORY_RESERVATION}
+
+  # --- Gestor de Series ---
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONFIG_PATH}/sonarr:/config
+      - ${DATA_PATH}:/data
+    ports:
+      - ${SONARR_PORT}:8989
+    restart: unless-stopped
+    networks:
+      - mediaserver
+    deploy:
+      resources:
+        limits:
+          memory: ${SONARR_MEMORY_LIMIT}
+        reservations:
+          memory: ${SONARR_MEMORY_RESERVATION}
+
+  # --- Indexador Centralizado ---
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONFIG_PATH}/prowlarr:/config
+    ports:
+      - ${PROWLARR_PORT}:9696
+    restart: unless-stopped
+    networks:
+      - mediaserver
+    deploy:
+      resources:
+        limits:
+          memory: ${PROWLARR_MEMORY_LIMIT}
+        reservations:
+          memory: ${PROWLARR_MEMORY_RESERVATION}
+
+  # --- Cliente Torrent ---
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - WEBUI_PORT=8080
+    volumes:
+      - ${CONFIG_PATH}/qbittorrent:/config
+      - ${DATA_PATH}/torrents:/data/torrents
+    ports:
+      - ${QBITTORRENT_PORT}:8080
+      - ${QBITTORRENT_TORRENT_PORT}:6881
+      - ${QBITTORRENT_TORRENT_PORT}:6881/udp
+    restart: unless-stopped
+    networks:
+      - mediaserver
+    deploy:
+      resources:
+        limits:
+          memory: ${QBITTORRENT_MEMORY_LIMIT}
+        reservations:
+          memory: ${QBITTORRENT_MEMORY_RESERVATION}
+
+  # --- Gestor de Subtítulos ---
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONFIG_PATH}/bazarr:/config
+      - ${DATA_PATH}/media:/data/media
+    ports:
+      - ${BAZARR_PORT}:6767
+    restart: unless-stopped
+    networks:
+      - mediaserver
+    depends_on:
+      - sonarr
+      - radarr
+    deploy:
+      resources:
+        limits:
+          memory: ${BAZARR_MEMORY_LIMIT}
+        reservations:
+          memory: ${BAZARR_MEMORY_RESERVATION}
+
+# Red privada para comunicación entre contenedores
+networks:
+  mediaserver:
+    driver: bridge

@@ -1,0 +1,27 @@
+# Variables de entorno (contiene configuración personal)
+.env
+
+# Datos y medios (películas, series, torrents)
+data/
+
+# Configuraciones de servicios (API keys, bases de datos)
+config/
+
+# Logs
+*.log
+
+# Archivos temporales
+*.tmp
+*.swp
+*.swo
+*~
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs
+.vscode/
+.idea/
+*.code-workspace
