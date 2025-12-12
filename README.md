@@ -138,13 +138,13 @@ graph TD
     Sonarr -->|Agrega| qBittorrent
     
     %% Almacenamiento
-    qBittorrent -->|Descarga| Torrents[/data/torrents]
+    qBittorrent -->|Descarga| Torrents[Torrents Directory]
     
     %% Organización
     Torrents -->|Completado| Radarr
     Torrents -->|Completado| Sonarr
-    Radarr -->|Organiza| Movies[/data/media/movies]
-    Sonarr -->|Organiza| Shows[/data/media/shows]
+    Radarr -->|Organiza| Movies[Movies Directory]
+    Sonarr -->|Organiza| Shows[Shows Directory]
     
     %% Subtítulos
     Radarr -.->|Notifica| Bazarr[Bazarr<br/>Subtítulos]
