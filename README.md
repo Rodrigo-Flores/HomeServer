@@ -607,7 +607,3 @@ docker compose up -d
 # Verificar logs por si hay errores
 docker compose logs -f
 ```
-
----
-
-**Hecho con para automatización de medios**
