@@ -1,0 +1,12 @@
+# Caddyfile - Configuración de Reverse Proxy con SSL Automático
+# 
+# Copia este archivo a config/caddy/Caddyfile en tu servidor:
+#   mkdir -p config/caddy
+#   cp Caddyfile.example config/caddy/Caddyfile
+#
+# Luego edita el dominio según tu configuración.
+
+# Reemplaza "tu-dominio.ddns.net" con tu dominio real (ej: phisc.ddns.net)
+tu-dominio.ddns.net {
+    reverse_proxy jellyfin:8096
+}

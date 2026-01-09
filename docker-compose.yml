@@ -1,4 +1,25 @@
 services:
+  # --- Reverse Proxy con SSL Automático ---
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"     # HTTP (para verificación ACME)
+      - "443:443"   # HTTPS
+    volumes:
+      - ${CONFIG_PATH}/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ${CONFIG_PATH}/caddy/data:/data
+      - ${CONFIG_PATH}/caddy/config:/config
+    networks:
+      - mediaserver
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+
   # --- Servidor Multimedia ---
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest

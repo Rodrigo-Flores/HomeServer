@@ -482,13 +482,52 @@ Todos los demás servicios también son accesibles:
 - qBittorrent: `http://TU_IP:8080`
 - Bazarr: `http://TU_IP:6767`
 
-### Desde Internet (Avanzado)
+### Desde Internet con HTTPS (Caddy)
 
-⚠️ **No recomendado sin medidas de seguridad apropiadas**
+Para acceso seguro desde fuera de tu red usando SSL/HTTPS:
 
-Para acceso desde fuera de tu red necesitarás:
-- VPN (WireGuard, Tailscale) - **Recomendado**
-- O Reverse Proxy con HTTPS (Nginx, Caddy, Traefik)
+#### Requisitos Previos:
+- Un dominio (gratuito con [No-IP](https://www.noip.com) o similar)
+- Puertos 80 y 443 redirigidos a tu servidor en el router
+
+#### Configuración:
+
+1. **Crear el Caddyfile:**
+   ```bash
+   mkdir -p config/caddy
+   cp Caddyfile.example config/caddy/Caddyfile
+   
+   # Editar con tu dominio
+   nano config/caddy/Caddyfile
+   ```
+   
+   Contenido:
+   ```caddyfile
+   tu-dominio.ddns.net {
+       reverse_proxy jellyfin:8096
+   }
+   ```
+
+2. **Actualizar `.env`:**
+   ```env
+   JELLYFIN_PUBLISHED_URL=https://tu-dominio.ddns.net
+   ```
+
+3. **Levantar servicios:**
+   ```bash
+   docker compose up -d
+   
+   # Verificar que Caddy obtuvo el certificado
+   docker compose logs caddy
+   ```
+
+4. **Acceder:** `https://tu-dominio.ddns.net`
+
+> **Nota:** Caddy obtiene y renueva certificados Let's Encrypt automáticamente. No necesitas cron jobs.
+
+#### Alternativa: VPN (Más Seguro)
+- [Tailscale](https://tailscale.com) - Fácil de configurar
+- WireGuard - Mayor control
 
 ## Migración a Disco Externo
 
